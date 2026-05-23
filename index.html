@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💕 给燕子的专属小窝</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --pink: #ff6b9d;
+    --pink-light: #ffa5c3;
+    --pink-bg: #fff0f5;
+    --rose: #e91e63;
+    --lavender: #e8d5f5;
+    --mint: #d4f5e9;
+    --peach: #ffe5d9;
+    --yellow: #fff3cd;
+    --white: #ffffff;
+    --text: #4a3347;
+    --text-light: #8b7089;
+    --shadow: 0 4px 20px rgba(233,30,99,0.12);
+    --radius: 16px;
+  }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 30%, #f48fb1 60%, #fff0f5 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* Floating hearts background */
+  .hearts-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .heart {
+    position: absolute;
+    font-size: 20px;
+    animation: floatHeart linear infinite;
+    opacity: 0.4;
+  }
+  @keyframes floatHeart {
+    0% { transform: translateY(100vh) rotate(0deg) scale(0.5); opacity: 0; }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-100px) rotate(360deg) scale(1); opacity: 0; }
+  }
+
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 30px 0 20px;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--rose);
+    text-shadow: 0 2px 10px rgba(233,30,99,0.2);
+    margin-bottom: 6px;
+  }
+  .header .subtitle {
+    font-size: 14px;
+    color: var(--text-light);
+  }
+  .header .date {
+    font-size: 13px;
+    color: var(--pink);
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  /* Cards */
+  .card {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,107,157,0.15);
+    transition: transform 0.2s;
+  }
+  .card:active { transform: scale(0.98); }
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--rose);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .icon { font-size: 20px; }
+
+  /* Sweet Message */
+  .sweet-msg {
+    text-align: center;
+    padding: 16px;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sweet-msg .msg-text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text);
+    font-weight: 400;
+  }
+  .sweet-msg .msg-emoji {
+    font-size: 24px;
+    margin-top: 8px;
+  }
+  .next-msg-time {
+    text-align: right;
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 8px;
+  }
+
+  /* Weather */
+  .weather-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .weather-icon { font-size: 48px; }
+  .weather-info { flex: 1; }
+  .weather-temp { font-size: 28px; font-weight: 700; color: var(--rose); }
+  .weather-desc { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+  .weather-detail { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+
+  /* Period Tracker */
+  .period-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .period-stat {
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+  }
+  .period-stat .num {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--rose);
+  }
+  .period-stat .label {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+  .period-bar {
+    width: 100%;
+    height: 8px;
+    background: #fce4ec;
+    border-radius: 4px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+  .period-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, var(--pink), var(--rose));
+    border-radius: 4px;
+    transition: width 0.5s;
+  }
+  .period-tip {
+    font-size: 12px;
+    color: var(--pink);
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: var(--pink-bg);
+    border-radius: 8px;
+    line-height: 1.6;
+  }
+  .period-settings {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed #f8bbd0;
+  }
+  .period-settings label {
+    font-size: 12px;
+    color: var(--text-light);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .period-settings input {
+    width: 80px;
+    padding: 6px 10px;
+    border: 1px solid #f8bbd0;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    text-align: center;
+  }
+  .period-settings input:focus { border-color: var(--pink); }
+  .period-settings .inline { display: flex; gap: 16px; margin-bottom: 8px; }
+
+  /* Habit Tracker */
+  .habit-list { list-style: none; }
+  .habit-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #fce4ec;
+    gap: 10px;
+  }
+  .habit-item:last-child { border-bottom: none; }
+  .habit-check {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--pink-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+  .habit-check.done {
+    background: var(--pink);
+    border-color: var(--pink);
+  }
+  .habit-check.done::after { content: '✓'; color: white; font-size: 14px; font-weight: 700; }
+  .habit-name { flex: 1; font-size: 14px; }
+  .habit-name.done { text-decoration: line-through; color: var(--text-light); }
+  .habit-streak { font-size: 11px; color: var(--pink); font-weight: 500; }
+  .habit-msg {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--mint);
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #2d6a4f;
+  }
+  .add-habit {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .add-habit input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #f8bbd0;
+    border-radius: 10px;
+    font-size: 13px;
+    outline: none;
+  }
+  .add-habit input:focus { border-color: var(--pink); }
+  .add-habit button {
+    padding: 8px 14px;
+    background: var(--pink);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  /* Todo */
+  .todo-input-wrap {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .todo-input-wrap input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #f8bbd0;
+    border-radius: 12px;
+    font-size: 14px;
+    outline: none;
+  }
+  .todo-input-wrap input:focus { border-color: var(--pink); }
+  .todo-input-wrap button {
+    padding: 10px 16px;
+    background: linear-gradient(135deg, var(--pink), var(--rose));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .todo-list { list-style: none; }
+  .todo-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #fce4ec;
+    gap: 10px;
+  }
+  .todo-item:last-child { border-bottom: none; }
+  .todo-check {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--pink-light);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+  .todo-check.done {
+    background: var(--mint);
+    border-color: #52b788;
+  }
+  .todo-check.done::after { content: '✓'; color: #2d6a4f; font-size: 12px; font-weight: 700; }
+  .todo-text { flex: 1; font-size: 14px; }
+  .todo-text.done { text-decoration: line-through; color: var(--text-light); }
+  .todo-del {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: #fce4ec;
+    color: var(--pink);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .todo-item:hover .todo-del { opacity: 1; }
+
+  /* Countdown */
+  .countdown-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .countdown-item {
+    text-align: center;
+    padding: 12px;
+    background: var(--pink-bg);
+    border-radius: 12px;
+  }
+  .countdown-item .num {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--rose);
+  }
+  .countdown-item .label {
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 30px 0;
+    font-size: 12px;
+    color: var(--pink-light);
+  }
+  .footer .heart { color: var(--rose); }
+
+  /* Day selector */
+  .day-selector {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .day-btn {
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid #f8bbd0;
+    background: white;
+    font-size: 11px;
+    cursor: pointer;
+    color: var(--text-light);
+  }
+  .day-btn.active {
+    background: var(--pink);
+    color: white;
+    border-color: var(--pink);
+  }
+
+  /* Animations */
+  .fade-in { animation: fadeIn 0.6s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .pulse { animation: pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+  /* Responsive */
+  @media (max-width: 360px) {
+    .header h1 { font-size: 24px; }
+    .weather-icon { font-size: 36px; }
+    .countdown-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hearts-bg" id="heartsBg"></div>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header fade-in">
+    <h1>💕 燕子的小窝</h1>
+    <div class="subtitle">每一天都想对你好一点点</div>
+    <div class="date" id="headerDate"></div>
+  </div>
+
+  <!-- Sweet Message -->
+  <div class="card fade-in" id="sweetCard">
+    <div class="card-title"><span class="icon">💌</span> 今日甜言蜜语</div>
+    <div class="sweet-msg">
+      <div>
+        <div class="msg-text" id="sweetMsg">加载中...</div>
+        <div class="msg-emoji" id="sweetEmoji">💕</div>
+      </div>
+    </div>
+    <div class="next-msg-time" id="nextMsgTime"></div>
+  </div>
+
+  <!-- Weather -->
+  <div class="card fade-in" id="weatherCard">
+    <div class="card-title"><span class="icon">🌤️</span> 今日天气</div>
+    <div class="weather-content">
+      <div class="weather-icon" id="weatherIcon">🌤️</div>
+      <div class="weather-info">
+        <div class="weather-temp" id="weatherTemp">--°C</div>
+        <div class="weather-desc" id="weatherDesc">获取中...</div>
+        <div class="weather-detail" id="weatherDetail"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Countdown -->
+  <div class="card fade-in">
+    <div class="card-title"><span class="icon">⏰</span> 爱情计时器</div>
+    <div class="countdown-grid" id="countdownGrid"></div>
+  </div>
+
+  <!-- Period Tracker -->
+  <div class="card fade-in">
+    <div class="card-title"><span class="icon">🌸</span> 贴心提醒</div>
+    <div class="period-info">
+      <div class="period-stat">
+        <div class="num" id="periodDaysLeft">--</div>
+        <div class="label">天后来</div>
+      </div>
+      <div class="period-stat">
+        <div class="num" id="periodCycleDay">--</div>
+        <div class="label">周期第几天</div>
+      </div>
+      <div class="period-stat">
+        <div class="num" id="periodCycleLen">28</div>
+        <div class="label">周期长度</div>
+      </div>
+    </div>
+    <div class="period-bar"><div class="period-bar-inner" id="periodBar"></div></div>
+    <div class="period-tip" id="periodTip">正在计算...</div>
+    <div class="period-settings">
+      <div class="inline">
+        <div>
+          <label>上次日期</label>
+          <input type="date" id="periodLastDate" />
+        </div>
+        <div>
+          <label>周期天数</label>
+          <input type="number" id="periodCycle" value="28" min="20" max="45" />
+        </div>
+        <div>
+          <label>经期天数</label>
+          <input type="number" id="periodDuration" value="5" min="2" max="10" />
+        </div>
+      </div>
+      <button onclick="savePeriodSettings()" style="padding:6px 16px;background:var(--pink);color:white;border:none;border-radius:8px;font-size:12px;cursor:pointer;">保存设置</button>
+    </div>
+  </div>
+
+  <!-- Habits -->
+  <div class="card fade-in">
+    <div class="card-title"><span class="icon">✅</span> 每日打卡</div>
+    <div class="day-selector" id="habitDaySel"></div>
+    <ul class="habit-list" id="habitList"></ul>
+    <div class="habit-msg" id="habitMsg"></div>
+    <div class="add-habit">
+      <input type="text" id="newHabitInput" placeholder="添加新习惯..." maxlength="20" />
+      <button onclick="addHabit()">添加</button>
+    </div>
+  </div>
+
+  <!-- Todo -->
+  <div class="card fade-in">
+    <div class="card-title"><span class="icon">📝</span> 待办事项</div>
+    <div class="todo-input-wrap">
+      <input type="text" id="todoInput" placeholder="添加待办..." maxlength="50" />
+      <button onclick="addTodo()">添加</button>
+    </div>
+    <ul class="todo-list" id="todoList"></ul>
+  </div>
+
+  <div class="footer">
+    用 <span class="heart">❤️</span> 为燕子制作 · 每天都要开心哦
+  </div>
+</div>
+
+<script>
+// ==================== Config ====================
+const STORAGE_KEY = 'love_page_data';
+const WEATHER_CITY = '榆中县'; // Change to your city
+const LOVE_START = '2024-11-13'; // Change to your love start date
+
+// ==================== Data ====================
+function loadData() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultData();
+  } catch { return defaultData(); }
+}
+function saveData(d) { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+function defaultData() {
+  return {
+    periodLastDate: '',
+    periodCycle: 28,
+    periodDuration: 5,
+    habits: [
+      { id: 1, name: '早起喝杯水', icon: '💧' },
+      { id: 2, name: '吃早餐', icon: '🥣' },
+      { id: 3, name: '运动30分钟', icon: '🏃‍♀️' },
+      { id: 4, name: '读书30分钟', icon: '📖' },
+      { id: 5, name: '早睡(23点前)', icon: '🌙' },
+    ],
+    habitLog: {},
+    todos: [],
+    msgIndex: 0,
+    lastMsgDate: '',
+  };
+}
+let data = loadData();
+
+// ==================== Sweet Messages ====================
+const sweetMessages = [
+  { text: '燕子，今天也要开开心心的哦～', emoji: '😊' },
+  { text: '想你了，你有没有想我呀？', emoji: '🥺' },
+  { text: '你是我见过最可爱的女孩子', emoji: '💕' },
+  { text: '不管发生什么，我都在你身边', emoji: '🤗' },
+  { text: '你的笑容比阳光还温暖', emoji: '☀️' },
+  { text: '遇见你是我最大的幸运', emoji: '🍀' },
+  { text: '今天辛苦了，记得早点休息哦', emoji: '😴' },
+  { text: '你是我每天最想见到的人', emoji: '🥰' },
+  { text: '燕子，我爱你，每一天都爱你', emoji: '❤️' },
+  { text: '有你在的地方就是我的家', emoji: '🏠' },
+  { text: '你笑起来真好看，要多笑笑哦', emoji: '😄' },
+  { text: '想和你一起看日落', emoji: '🌅' },
+  { text: '你是我心中永远的宝贝', emoji: '💎' },
+  { text: '谢谢你出现在我的生命里', emoji: '🙏' },
+  { text: '和你在一起的每一天都很甜', emoji: '🍬' },
+  { text: '你是我最想保护的人', emoji: '🛡️' },
+  { text: '燕子，今天也要加油鸭！', emoji: '💪' },
+  { text: '你是我见过最善良的人', emoji: '🌟' },
+  { text: '想牵你的手一直走下去', emoji: '👫' },
+  { text: '你是我的小幸运', emoji: '🍀' },
+  { text: '每天醒来第一件事就是想你', emoji: '💭' },
+  { text: '你值得世间一切美好', emoji: '🌈' },
+  { text: '燕子，你今天吃饭了吗？要好好吃饭哦', emoji: '🍚' },
+  { text: '想给你一个大大的拥抱', emoji: '🫂' },
+  { text: '你是我最好的选择，永远都是', emoji: '💍' },
+  { text: '燕子，天冷了要多穿衣服哦', emoji: '🧥' },
+  { text: '你开心我就开心', emoji: '😊' },
+  { text: '想和你一起变老', emoji: '👴👵' },
+  { text: '你是我见过最努力的人', emoji: '⭐' },
+  { text: '永远爱你的燕子', emoji: '💘' },
+];
+
+// ==================== Init ====================
+function init() {
+  updateHeaderDate();
+  initSweetMsg();
+  initWeather();
+  initCountdown();
+  initPeriod();
+  initHabits();
+  initTodos();
+  createHearts();
+}
+
+// ==================== Header Date ====================
+function updateHeaderDate() {
+  const now = new Date();
+  const days = ['日','一','二','三','四','五','六'];
+  const d = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${days[now.getDay()]}`;
+  document.getElementById('headerDate').textContent = d;
+}
+
+// ==================== Sweet Message ====================
+function initSweetMsg() {
+  const today = new Date().toDateString();
+  if (data.lastMsgDate !== today) {
+    data.msgIndex = (data.msgIndex + 1) % sweetMessages.length;
+    data.lastMsgDate = today;
+    saveData(data);
+  }
+  showSweetMsg();
+  // Auto rotate every 4 hours
+  setInterval(showSweetMsg, 4 * 60 * 60 * 1000);
+}
+function showSweetMsg() {
+  const msg = sweetMessages[data.msgIndex % sweetMessages.length];
+  document.getElementById('sweetMsg').textContent = msg.text;
+  document.getElementById('sweetEmoji').textContent = msg.emoji;
+  const now = new Date();
+  const nextH = Math.ceil((now.getHours() + 1) / 4) * 4;
+  const next = new Date(now);
+  next.setHours(nextH % 24, 0, 0, 0);
+  if (nextH >= 24) next.setDate(next.getDate() + 1);
+  const diff = next - now;
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  document.getElementById('nextMsgTime').textContent = `⏰ 下一条：${h}小时${m}分钟后`;
+}
+
+// ==================== Weather ====================
+async function initWeather() {
+  try {
+    const resp = await fetch(`https://wttr.in/${encodeURIComponent(WEATHER_CITY)}?format=j1`);
+    const j = await resp.json();
+    const cur = j.current_condition[0];
+    const temp = cur.temp_C;
+    const desc = cur.lang_zh && cur.lang_zh[0] ? cur.lang_zh[0].value : cur.weatherDesc[0].value;
+    const humidity = cur.humidity;
+    const wind = cur.windspeedKmph;
+    const feelsLike = cur.FeelsLikeC;
+
+    const weatherMap = {
+      'Sunny': '☀️', 'Clear': '🌙', 'Partly cloudy': '⛅', 'Cloudy': '☁️',
+      'Overcast': '🌥️', 'Mist': '🌫️', 'Fog': '🌫️', 'Light rain': '🌦️',
+      'Moderate rain': '🌧️', 'Heavy rain': '⛈️', 'Light snow': '🌨️',
+      'Moderate snow': '❄️', 'Heavy snow': '❄️', 'Thunderstorm': '⛈️',
+      'Patchy rain possible': '🌦️', 'Light drizzle': '🌦️',
+    };
+    const icon = weatherMap[desc] || '🌤️';
+    // Chinese weather descriptions
+    const zhDesc = desc.replace('Sunny','晴天').replace('Clear','晴朗')
+      .replace('Partly cloudy','多云').replace('Cloudy','阴天')
+      .replace('Overcast','阴天').replace('Mist','薄雾')
+      .replace('Light rain','小雨').replace('Moderate rain','中雨')
+      .replace('Heavy rain','大雨').replace('Light snow','小雪')
+      .replace('Moderate snow','中雪').replace('Heavy snow','大雪')
+      .replace('Thunderstorm','雷暴').replace('Light drizzle','毛毛雨')
+      .replace('Patchy rain possible','可能有雨')
+      .replace('Fog','大雾');
+
+    document.getElementById('weatherIcon').textContent = icon;
+    document.getElementById('weatherTemp').textContent = `${temp}°C`;
+    document.getElementById('weatherDesc').textContent = `${WEATHER_CITY} · ${zhDesc}`;
+    document.getElementById('weatherDetail').textContent = `体感${feelsLike}°C · 湿度${humidity}% · 风速${wind}km/h`;
+  } catch {
+    document.getElementById('weatherDesc').textContent = '天气获取失败，但我的爱不会～';
+  }
+}
+
+// ==================== Countdown ====================
+function initCountdown() {
+  const start = new Date(LOVE_START);
+  const now = new Date();
+  const diff = now - start;
+  const days = Math.floor(diff / 86400000);
+  const months = Math.floor(days / 30);
+  const weeks = Math.floor(days / 7);
+  const hours = Math.floor(diff / 3600000);
+
+  document.getElementById('countdownGrid').innerHTML = `
+    <div class="countdown-item"><div class="num">${days}</div><div class="label">在一起的天数 💕</div></div>
+    <div class="countdown-item"><div class="num">${weeks}</div><div class="label">在一起的周数 📅</div></div>
+    <div class="countdown-item"><div class="num">${months}</div><div class="label">在一起的月数 🌙</div></div>
+    <div class="countdown-item"><div class="num">${hours.toLocaleString()}</div><div class="label">在一起的小时数 ⏰</div></div>
+  `;
+}
+
+// ==================== Period Tracker ====================
+function initPeriod() {
+  if (data.periodLastDate) {
+    document.getElementById('periodLastDate').value = data.periodLastDate;
+  }
+  document.getElementById('periodCycle').value = data.periodCycle;
+  document.getElementById('periodDuration').value = data.periodDuration;
+  updatePeriodDisplay();
+
+  document.getElementById('periodLastDate').addEventListener('change', function() {
+    data.periodLastDate = this.value;
+    saveData(data);
+    updatePeriodDisplay();
+  });
+  document.getElementById('periodCycle').addEventListener('change', function() {
+    data.periodCycle = parseInt(this.value) || 28;
+    saveData(data);
+    updatePeriodDisplay();
+  });
+}
+
+function savePeriodSettings() {
+  data.periodLastDate = document.getElementById('periodLastDate').value;
+  data.periodCycle = parseInt(document.getElementById('periodCycle').value) || 28;
+  data.periodDuration = parseInt(document.getElementById('periodDuration').value) || 5;
+  saveData(data);
+  updatePeriodDisplay();
+  alert('设置已保存 ✅');
+}
+
+function updatePeriodDisplay() {
+  if (!data.periodLastDate) {
+    document.getElementById('periodDaysLeft').textContent = '--';
+    document.getElementById('periodCycleDay').textContent = '--';
+    document.getElementById('periodTip').textContent = '请先设置上次经期日期';
+    document.getElementById('periodBar').style.width = '0%';
+    return;
+  }
+  const last = new Date(data.periodLastDate);
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  last.setHours(0,0,0,0);
+  const cycle = data.periodCycle;
+  const diff = Math.floor((now - last) / 86400000);
+  const cycleDay = ((diff % cycle) + cycle) % cycle + 1;
+  const nextPeriod = cycle - cycleDay;
+  const progress = (cycleDay / cycle * 100).toFixed(1);
+
+  document.getElementById('periodDaysLeft').textContent = nextPeriod;
+  document.getElementById('periodCycleDay').textContent = cycleDay;
+  document.getElementById('periodCycleLen').textContent = cycle;
+  document.getElementById('periodBar').style.width = `${progress}%`;
+
+  let tip = '';
+  if (cycleDay <= data.periodDuration) {
+    tip = '🌸 经期中，注意保暖，少吃生冷，多喝热水～';
+  } else if (nextPeriod <= 3) {
+    tip = '⚠️ 快来了，提前准备好红糖水和暖宝宝哦～';
+  } else if (cycleDay >= 10 && cycleDay <= 16) {
+    tip = '✨ 排卵期，注意休息～';
+  } else {
+    tip = '💪 安全期，保持好心情～';
+  }
+  document.getElementById('periodTip').textContent = tip;
+}
+
+// ==================== Habits ====================
+let currentHabitDate = new Date().toISOString().slice(0,10);
+
+function initHabits() {
+  renderDaySelector();
+  renderHabits();
+}
+
+function renderDaySelector() {
+  const sel = document.getElementById('habitDaySel');
+  sel.innerHTML = '';
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().slice(0,10);
+    const dayName = i === 0 ? '今天' : i === 1 ? '昨天' : `${d.getMonth()+1}/${d.getDate()}`;
+    const btn = document.createElement('button');
+    btn.className = `day-btn${dateStr === currentHabitDate ? ' active' : ''}`;
+    btn.textContent = dayName;
+    btn.onclick = () => { currentHabitDate = dateStr; renderDaySelector(); renderHabits(); };
+    sel.appendChild(btn);
+  }
+}
+
+function renderHabits() {
+  const list = document.getElementById('habitList');
+  const log = data.habitLog[currentHabitDate] || {};
+  const allDone = data.habits.length > 0 && data.habits.every(h => log[h.id]);
+
+  list.innerHTML = data.habits.map(h => {
+    const done = !!log[h.id];
+    return `
+      <li class="habit-item">
+        <div class="habit-check${done ? ' done' : ''}" onclick="toggleHabit(${h.id})"></div>
+        <span class="habit-name${done ? ' done' : ''}">${h.icon} ${h.name}</span>
+      </li>
+    `;
+  }).join('');
+
+  // Habit message
+  const doneCount = data.habits.filter(h => log[h.id]).length;
+  const total = data.habits.length;
+  const pct = total ? Math.round(doneCount / total * 100) : 0;
+  let msg = '';
+  if (currentHabitDate !== new Date().toISOString().slice(0,10)) {
+    msg = `📋 历史记录查看`;
+  } else if (pct === 100) {
+    msg = '🎉 太棒了！今天全部完成！燕子最厉害了！奖励你一个大大的亲亲～';
+  } else if (pct >= 60) {
+    msg = `👍 已完成 ${doneCount}/${total}，继续加油！你可以的～`;
+  } else if (pct > 0) {
+    msg = `💪 完成了 ${doneCount}/${total}，还差一点点，冲鸭！`;
+  } else {
+    msg = '🌸 新的一天开始了，从第一个小习惯开始吧～';
+  }
+  document.getElementById('habitMsg').textContent = msg;
+}
+
+function toggleHabit(id) {
+  if (!data.habitLog[currentHabitDate]) data.habitLog[currentHabitDate] = {};
+  data.habitLog[currentHabitDate][id] = !data.habitLog[currentHabitDate][id];
+  saveData(data);
+  renderHabits();
+}
+
+function addHabit() {
+  const input = document.getElementById('newHabitInput');
+  const name = input.value.trim();
+  if (!name) return;
+  const id = Date.now();
+  const icons = ['🌟','💪','🎯','✨','💖','🌈','⭐','🎵','📚','🧘'];
+  const icon = icons[Math.floor(Math.random() * icons.length)];
+  data.habits.push({ id, name, icon });
+  saveData(data);
+  input.value = '';
+  renderHabits();
+}
+
+// ==================== Todos ====================
+function initTodos() {
+  renderTodos();
+  document.getElementById('todoInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') addTodo();
+  });
+}
+
+function addTodo() {
+  const input = document.getElementById('todoInput');
+  const text = input.value.trim();
+  if (!text) return;
+  data.todos.unshift({ id: Date.now(), text, done: false });
+  saveData(data);
+  input.value = '';
+  renderTodos();
+}
+
+function toggleTodo(id) {
+  const todo = data.todos.find(t => t.id === id);
+  if (todo) todo.done = !todo.done;
+  saveData(data);
+  renderTodos();
+}
+
+function delTodo(id) {
+  data.todos = data.todos.filter(t => t.id !== id);
+  saveData(data);
+  renderTodos();
+}
+
+function renderTodos() {
+  const list = document.getElementById('todoList');
+  if (data.todos.length === 0) {
+    list.innerHTML = '<li style="text-align:center;color:var(--text-light);font-size:13px;padding:16px;">暂无待办，好轻松～ 🎉</li>';
+    return;
+  }
+  list.innerHTML = data.todos.map(t => `
+    <li class="todo-item">
+      <div class="todo-check${t.done ? ' done' : ''}" onclick="toggleTodo(${t.id})"></div>
+      <span class="todo-text${t.done ? ' done' : ''}">${t.text}</span>
+      <button class="todo-del" onclick="delTodo(${t.id})">×</button>
+    </li>
+  `).join('');
+}
+
+// ==================== Floating Hearts ====================
+function createHearts() {
+  const bg = document.getElementById('heartsBg');
+  const hearts = ['💕','💖','💗','💝','🩷','🌸','✨','⭐'];
+  for (let i = 0; i < 20; i++) {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+    heart.style.left = Math.random() * 100 + '%';
+    heart.style.fontSize = (14 + Math.random() * 16) + 'px';
+    heart.style.animationDuration = (8 + Math.random() * 12) + 's';
+    heart.style.animationDelay = Math.random() * 10 + 's';
+    bg.appendChild(heart);
+  }
+}
+
+// ==================== Keyboard shortcuts ====================
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.activeElement.id === 'newHabitInput') {
+    addHabit();
+  }
+});
+
+// ==================== Start ====================
+init();
+</script>
+</body>
+</html>
