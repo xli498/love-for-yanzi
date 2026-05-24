@@ -377,8 +377,8 @@
   /* Countdown */
   .countdown-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
   }
   .countdown-item {
     text-align: center;
@@ -626,8 +626,9 @@ function loadData() {
     const raw = localStorage.getItem(STORE_KEY);
     if (raw) {
       const d = JSON.parse(raw);
-      // Ensure habitLog exists
       if (!d.habitLog) d.habitLog = {};
+      // 始终使用源代码中的最新设置，避免缓存覆盖
+      d.counterStart = DEFAULT_DATA().counterStart;
       return d;
     }
   } catch(e) {}
@@ -768,12 +769,15 @@ function updateCountdown() {
   const start = new Date(data.counterStart).getTime();
   const now = new Date().getTime();
   const diff = Math.max(0, now - start);
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const weeks = Math.floor(totalDays / 7);
+  const days = totalDays % 7;
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
   const secs = Math.floor((diff % (1000 * 60)) / 1000);
 
   document.getElementById('countdownGrid').innerHTML = `
+    <div class="countdown-item"><div class="num">${weeks}</div><div class="label">周</div></div>
     <div class="countdown-item"><div class="num">${days}</div><div class="label">天</div></div>
     <div class="countdown-item"><div class="num">${hours}</div><div class="label">小时</div></div>
     <div class="countdown-item"><div class="num">${mins}</div><div class="label">分钟</div></div>
