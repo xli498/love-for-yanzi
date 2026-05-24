@@ -770,17 +770,16 @@ function updateCountdown() {
   const now = new Date().getTime();
   const diff = Math.max(0, now - start);
   const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const weeks = Math.floor(totalDays / 7);
-  const days = totalDays % 7;
-  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const totalWeeks = Math.floor(totalDays / 7);
+  const totalHours = Math.floor(diff / (1000 * 60 * 60));
+  const totalMins = Math.floor(diff / (1000 * 60));
   const secs = Math.floor((diff % (1000 * 60)) / 1000);
 
   document.getElementById('countdownGrid').innerHTML = `
-    <div class="countdown-item"><div class="num">${weeks}</div><div class="label">周</div></div>
-    <div class="countdown-item"><div class="num">${days}</div><div class="label">天</div></div>
-    <div class="countdown-item"><div class="num">${hours}</div><div class="label">小时</div></div>
-    <div class="countdown-item"><div class="num">${mins}</div><div class="label">分钟</div></div>
+    <div class="countdown-item"><div class="num">${totalDays}</div><div class="label">在一起的天数</div></div>
+    <div class="countdown-item"><div class="num">${totalWeeks}</div><div class="label">累计周数</div></div>
+    <div class="countdown-item"><div class="num">${totalHours}</div><div class="label">累计小时数</div></div>
+    <div class="countdown-item"><div class="num">${totalMins}</div><div class="label">累计分钟数</div></div>
     <div class="countdown-item"><div class="num">${secs}</div><div class="label">秒</div></div>
   `;
 }
